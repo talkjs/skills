@@ -4,7 +4,6 @@ description: Add TalkJS chat to a new or existing web, React Native, or Flutter 
 license: MIT
 metadata:
   author: talkjs
-  version: "1.0.0"
 ---
 
 # Add TalkJS to an app
