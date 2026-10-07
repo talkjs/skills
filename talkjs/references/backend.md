@@ -1,5 +1,7 @@
 # Backend authentication and membership
 
+> This guide continues the main [talkjs skill](../SKILL.md). If you haven't read it yet, read it first and don't start here: it covers creating the test project, the proof-of-concept scope, and verification.
+
 Use this alongside the platform guide for requested TalkJS authentication or enforced private conversation access, necessary REST API calls, or production deployment. Follow the main skill's POC-first scope: an existing app login does not require adding TalkJS authentication during the initial POC. Read only the sections needed for the current task.
 
 ## Get backend credentials

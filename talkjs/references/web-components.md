@@ -1,5 +1,7 @@
 # Other web frameworks
 
+> This guide continues the main [talkjs skill](../SKILL.md). If you haven't read it yet, read it first and don't start here: it covers creating the test project, the proof-of-concept scope, and verification.
+
 Read the guide for the project's actual framework; don't translate React examples by changing tag names:
 
 | Project | Starting guide |

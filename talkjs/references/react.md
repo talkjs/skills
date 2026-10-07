@@ -1,5 +1,7 @@
 # React and Next.js
 
+> This guide continues the main [talkjs skill](../SKILL.md). If you haven't read it yet, read it first and don't start here: it covers creating the test project, the proof-of-concept scope, and verification.
+
 Read the [React getting-started guide](https://talkjs.com/docs/UI_Components/React.md) before implementing. For Next.js, also read its [browser/client setup](https://talkjs.com/docs/UI_Components/Nextjs.md). New integrations use the modern React Components and JavaScript Data API; don't mix them with Classic React examples.
 
 Use the docs according to the part being implemented:

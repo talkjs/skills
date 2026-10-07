@@ -1,5 +1,7 @@
 # React Native and Expo
 
+> This guide continues the main [talkjs skill](../SKILL.md). If you haven't read it yet, read it first and don't start here: it covers creating the test project, the proof-of-concept scope, and verification.
+
 Use the [React Native getting-started guide](https://talkjs.com/docs/UI_Components/React_Native.md). This SDK currently wraps the Classic web SDK in a WebView. Use its mobile components and session API.
 
 Tell the user how to enable the Classic SDK settings in their [dashboard](https://talkjs.com/dashboard/): open **Project settings**, then under **Dashboard settings** select **Enable UI Theme Editor (Classic SDKs)** and **Save**. This exposes the Classic settings and theme editor used by this SDK. Include these steps in the handoff even if no theme customization was requested. See [dashboard setup](https://talkjs.com/docs/UI_Components/React_Native.md).
