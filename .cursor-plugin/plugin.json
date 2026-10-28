@@ -1,0 +1,19 @@
+{
+  "name": "talkjs",
+  "description": "Add TalkJS chat to web, React Native, and Flutter apps.",
+  "version": "1.0.0",
+  "author": {
+    "name": "TalkJS"
+  },
+  "homepage": "https://talkjs.com",
+  "repository": "https://github.com/talkjs/skills",
+  "license": "MIT",
+  "keywords": [
+    "talkjs",
+    "chat",
+    "messaging",
+    "react",
+    "react-native",
+    "flutter"
+  ]
+}

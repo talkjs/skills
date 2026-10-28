@@ -1,8 +1,10 @@
-# TalkJS skills
+# TalkJS plugin and skill
 
 Agent skills that let AI coding agents add [TalkJS](https://talkjs.com) chat to your app. They work with Codex, Cursor, Claude Code, GitHub Copilot, and other agents that support [Agent Skills](https://agentskills.io).
 
 ## Install
+
+### Agent Skills
 
 ```sh
 npx skills add talkjs/skills
@@ -15,6 +17,16 @@ Prefer not to install anything? Paste this prompt into your agent instead:
 ```
 Add TalkJS chat to my app: talkjs.com/SKILL.md
 ```
+
+### Cursor plugin
+
+Once the plugin is listed, install it from its [Cursor Directory](https://cursor.directory) page. To test a local checkout before publication:
+
+1. Copy the repository contents, including `.cursor-plugin/`, into `~/.cursor/plugins/local/talkjs/`.
+2. Restart Cursor or run **Developer: Reload Window**.
+3. Open **Customize** and confirm that the `talkjs` skill appears.
+
+The plugin packages the same skill and platform guides as the Agent Skills installation. It uses HTTP requests to provision test projects; no TalkJS CLI or MCP server is required or bundled.
 
 ## What to ask your agent
 
@@ -33,7 +45,7 @@ Say who should talk to whom and where the chat goes (a button on a screen, a tab
 
 ## Supported platforms
 
-The [`talkjs` skill](talkjs/SKILL.md) works with React and Next.js, Vue, Svelte, Angular, plain JavaScript, React Native and Expo, and Flutter. It also covers backend authentication and the REST API. It picks the right platform guide for your project, so point your agent at the skill, not at the individual guides.
+The [`talkjs` skill](skills/talkjs/SKILL.md) works with React and Next.js, Vue, Svelte, Angular, plain JavaScript, React Native and Expo, and Flutter. It also covers backend authentication and the REST API. It picks the right platform guide for your project, so point your agent at the skill, not at the individual guides.
 
 ## Update
 
@@ -52,4 +64,4 @@ This repository syncs from the TalkJS codebase, so we can't merge pull requests 
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.txt)

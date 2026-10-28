@@ -38,7 +38,7 @@ Reuse the TalkJS project already configured in the app or retained in context. I
 POST https://api.talkjs.com/v1/anonymousAccounts
 ```
 
-The response contains `appId`, `accessToken`, and `claimUrl`. Use the returned `appId` in the SDK integration. Retain `appId` and `accessToken` in your working context and carry them into continuation summaries so future work can reuse the same project. Retain `claimUrl` for the user as well. Keep `accessToken` private; do not put it in frontend code or commit it to the repository. For REST API calls or backend authentication, read [references/backend.md](references/backend.md).
+The response contains `appId`, `accessToken`, and `claimUrl`. Use the returned `appId` in the SDK integration. Save `accessToken` and `claimUrl` in a private local credential file outside the repository, readable only by the current user. Carry only `appId` and the credential-file location into continuation summaries so future work can reuse the same project without copying credentials into summaries. Keep the access token out of frontend code, logs, user-facing output, and source control. Give the claim URL only to the intended owner, never in public app UI. For REST API calls or backend authentication, read [references/backend.md](references/backend.md).
 
 Configure the returned `appId` in the app yourself and enable the chat entry point. If the implementation needs backend credentials, retrieve and configure them yourself using the backend guide. A working anonymous-project POC does not require claiming the project or changing dashboard settings; do not leave placeholder credentials or ask the user to finish local configuration after provisioning succeeds.
 

@@ -6,7 +6,7 @@ Use this alongside the platform guide for requested TalkJS authentication or enf
 
 ## Get backend credentials
 
-For an anonymous project, retrieve its secret key using the `accessToken` retained in context by the main skill:
+For an anonymous project, retrieve its secret key using the `accessToken` saved in the private local credential file by the main skill. Read it without printing it to logs or user-facing output:
 
 ```http
 GET https://api.talkjs.com/v1/anonymousAccounts/<accessToken>
