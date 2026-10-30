@@ -26,7 +26,13 @@ Once the plugin is listed, install it from its [Cursor Directory](https://cursor
 2. Restart Cursor or run **Developer: Reload Window**.
 3. Open **Customize** and confirm that the `talkjs` skill appears.
 
-The plugin packages the same skill and platform guides as the Agent Skills installation. It uses HTTP requests to provision test projects; no TalkJS CLI or MCP server is required or bundled.
+The plugin packages the same skill and platform guides as the Agent Skills installation. No MCP server is bundled.
+
+### TalkJS CLI
+
+Account provisioning and test app configuration use the separately installed [TalkJS CLI](https://www.npmjs.com/package/@talkjs/cli), which requires Node.js 22.18 or newer. The skill includes [CLI installation and usage instructions](skills/talkjs/references/cli.md); your agent can install the CLI or run it with `npx @talkjs/cli`.
+
+The CLI manages test apps only. Use the [TalkJS dashboard](https://talkjs.com/dashboard/) for live app configuration.
 
 ## What to ask your agent
 
@@ -34,14 +40,17 @@ The plugin packages the same skill and platform guides as the Agent Skills insta
 - "Add a messages page with an inbox to my Vue app"
 - "Add a chat button to the order screen in my Expo app so customers can message their driver"
 - "Secure our TalkJS chat with backend authentication"
+- "Change the default chat language in our TalkJS test app to Dutch"
 
 Say who should talk to whom and where the chat goes (a button on a screen, a tab, a page). If you leave it out, your agent will suggest a spot and ask you to confirm before building.
 
 ## What the skill does
 
 1. **Reads your project.** It detects your framework, users, and backend, and adds chat to your existing app instead of starting a new one.
-2. **Creates a TalkJS account with a test project if you don't have one.** No sign-up needed: you can claim the account later with the link the agent gives you.
+2. **Creates a TalkJS account with a test project if you don't have one.** Your agent uses the CLI to provision and configure it. No sign-up needed: you can claim the account later with the link the agent gives you.
 3. **Builds a working version first.** Your agent sets up chat with test users and conversations so you can see it running locally.
+
+For configuration-only requests, the skill uses the CLI without scaffolding an app or running the full integration workflow.
 
 ## Supported platforms
 

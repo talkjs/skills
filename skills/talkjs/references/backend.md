@@ -6,15 +6,11 @@ Use this alongside the platform guide for requested TalkJS authentication or enf
 
 ## Get backend credentials
 
-For an anonymous project, retrieve its secret key using the `accessToken` saved in the private local credential file by the main skill. Read it without printing it to logs or user-facing output:
+Reuse a secret key already configured on the app's backend. Otherwise follow [the CLI secret-key workflow](cli.md#secret-keys): verify the selected app, list its keys, and retrieve an active key with `talkjs secret-keys get <id> --json`. The response's `value.secretKey` is the backend credential. This works for both an unclaimed anonymous test app and an OAuth-authorized test app; do not read access tokens from the CLI config or make claiming a prerequisite for retrieval.
 
-```http
-GET https://api.talkjs.com/v1/anonymousAccounts/<accessToken>
-```
+Use the secret key for REST API calls and, when implementing authentication, signing user authentication tokens. Configure it yourself in the app's server-side environment or Gitignored local configuration; never expose it in frontend code, logs, or source control. The anonymous access token and OAuth credential authorize CLI settings/key management; neither is a chat REST API secret key or an SDK user authentication token.
 
-The response contains `appId`, `secretKey`, and `claimUrl`. Use `secretKey` for REST API calls and, when implementing authentication, signing user authentication tokens. Configure the returned credentials yourself in the app's server-side environment or Gitignored local configuration; never expose the secret in frontend code or commit it to the repository. Do not wait for the user to claim the project or manually supply these credentials. The anonymous-project `accessToken` is neither a REST API secret key nor an SDK user authentication token.
-
-After the user claims the project, its `accessToken` stops working and this GET returns 404. Continue using the same `appId`; obtain the project's secret key from its owner's [TalkJS dashboard](https://talkjs.com/dashboard/) instead of creating a replacement project. Keep test and live credentials separate.
+Claiming invalidates the anonymous access token, not an already retrieved secret key. Continue using the same app ID and backend key; reconnect through `talkjs login` if CLI access was not established during claiming. The CLI manages test-app keys only; use the owner's [TalkJS dashboard](https://talkjs.com/dashboard/) for live credentials and keep the two environments separate.
 
 ## Integrate the backend
 
@@ -36,6 +32,6 @@ Use the example labeled for the backend's language; in the HTML fallback, select
 
 When implementing requested security work, derive TalkJS identity from the app's authenticated backend session and keep secrets/admin credentials server-side. Authentication and business authorization are separate: connect membership to the app's domain rules. Explain which data is created by the client and which by the backend, according to the chosen synchronization settings and platform API.
 
-Generating and sending signed tokens can be implemented and tested before dashboard authentication is enabled, but it does not make tokens mandatory. To enforce authentication, the user must claim an anonymous project and enable identity verification in the dashboard. For server-controlled membership, also follow the browser synchronization guidance above. These settings belong to requested security work; they must not block an initial POC, and existing protections must not be disabled to make a POC work.
+Generating and sending signed tokens can be implemented and tested before authentication is required, but it does not make tokens mandatory. For requested security work on the selected test app, enable enforcement with `talkjs settings set authentication required --json` once valid tokens work, and verify it with `talkjs settings get authentication --json`. This works before or after claiming. Live-app enforcement belongs in the dashboard. For server-controlled membership, also follow the browser synchronization guidance above. These settings must not block an initial POC, and existing protections must not be disabled to make a POC work.
 
 Use the app's existing request/auth conventions and an explicit frontend/backend identity contract. When implementing security, verify token refresh, rejection of missing or invalid authentication, denial of unauthorized conversation access, logout/re-login, and failed provisioning. If dashboard enforcement is pending, report security as incomplete even if valid tokens work. Report required account configuration before describing the result as secured or ready for deployment.

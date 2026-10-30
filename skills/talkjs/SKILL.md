@@ -1,6 +1,6 @@
 ---
 name: talkjs
-description: Add TalkJS chat to a new or existing web, React Native, or Flutter app. Choose the appropriate platform guide, connect the app's users and conversations, and integrate backend authentication when needed.
+description: Add TalkJS chat to a new or existing web, React Native, or Flutter app, or configure an existing test app with the TalkJS CLI. Create and claim anonymous accounts, manage settings and secret keys, integrate the appropriate SDK, and verify a working conversation.
 license: MIT
 metadata:
   author: talkjs
@@ -32,19 +32,29 @@ For new web integrations, use the modern Components SDKs. For mobile, use the Re
 
 ## Get a TalkJS project
 
-Reuse the TalkJS project already configured in the app or retained in context. If there is no project yet, create an anonymous test project without requiring the user to sign up. Set the request's `Content-Type` header to `application/json`:
+Read [references/cli.md](references/cli.md) for the complete command and option reference: account creation/claiming, login/logout, settings, custom fields, authentication, and secret keys. For a configuration-only request, use that reference without scaffolding an app or running the full integration workflow. Reuse the TalkJS project already configured in the app or retained in context; don't replace it just because the CLI has no matching credentials. If there is no project yet, create an anonymous test account through the CLI without requiring the user to sign up:
 
-```http
-POST https://api.talkjs.com/v1/anonymousAccounts
+```sh
+talkjs anonymous-account create --json
 ```
 
-The response contains `appId`, `accessToken`, and `claimUrl`. Use the returned `appId` in the SDK integration. Save `accessToken` and `claimUrl` in a private local credential file outside the repository, readable only by the current user. Carry only `appId` and the credential-file location into continuation summaries so future work can reuse the same project without copying credentials into summaries. Keep the access token out of frontend code, logs, user-facing output, and source control. Give the claim URL only to the intended owner, never in public app UI. For REST API calls or backend authentication, read [references/backend.md](references/backend.md).
+The CLI saves credentials and selects the new account. The JSON response is `{ "status": "ok", "value": { "appId": "...", "accessToken": "...", "claimUrl": "..." } }`. Use `value.appId` in the SDK integration and retain `value.claimUrl` privately for the intended owner. Keep the app ID and credential-file location in continuation summaries so future work can reuse the same project without copying tokens into summaries. Keep the access token and credential file private; never put them in frontend code, logs, or the repository. Give the claim URL only to the intended owner, not in public app UI.
 
-Configure the returned `appId` in the app yourself and enable the chat entry point. If the implementation needs backend credentials, retrieve and configure them yourself using the backend guide. A working anonymous-project POC does not require claiming the project or changing dashboard settings; do not leave placeholder credentials or ask the user to finish local configuration after provisioning succeeds.
+For a new account, give the test app a useful name and configure the locale or custom metadata when relevant. These settings do not require claiming:
+
+```sh
+talkjs settings set name "Marketplace chat" --json
+talkjs settings set defaultLocale en --json
+talkjs settings get --json
+```
+
+The settings surface is deliberately small: `name`, `defaultLocale`, `custom` (including `custom.<key>`), and `authentication` (`required` or `optional`). Use `settings get [field]`, `settings set <field> <value>`, and `settings unset custom.<key>`. For a language change, use `defaultLocale`, not a custom field; see the reference's [settings section](references/cli.md#settings) for examples and value rules. Secret-key management is separate: `secret-keys list|get|create|set|delete`. Roles, security presets, and live-app configuration are not CLI features yet.
+
+Use `talkjs whoami --json` to verify the selected app ID: `value.appId` for an anonymous account, or `value.project.appId` for an OAuth login. Configure that ID in the app yourself and enable the chat entry point. If the implementation needs REST calls or backend authentication, use the [CLI secret-key commands](references/cli.md#secret-keys) to retrieve an existing active key, then follow [references/backend.md](references/backend.md). Do not retrieve secrets for a client-only demo. A working anonymous-project POC does not require claiming the project or changing dashboard security settings. Do not leave placeholder credentials or ask the user to finish local configuration after provisioning succeeds.
 
 Anonymous projects are for testing: REST is available, uploads are limited to 1 MB, and features with external side effects are disabled. Creation is limited to one project per IP every 30 seconds; reuse the project rather than creating one for each step or retry.
 
-If the user wants to change dashboard settings, invite colleagues, or push the chat live to production, they must first **claim the project** by visiting the returned `claimUrl`, creating a proper TalkJS account (or logging into an existing one), and confirming the claim. Give the user this URL and explain when claiming is required. Claiming keeps the project in test mode; production setup is still a separate step.
+After the POC works, offer the claim URL so the user can take ownership and access the dashboard, invite colleagues, or prepare production setup. Do not make claiming a prerequisite for the demo or claim on the user's behalf. If the user wants to claim and connect the CLI, follow [the CLI claim flow](references/cli.md#claiming-and-existing-projects). Claiming keeps the app in test mode; production setup is still a separate step.
 
 ## Connect chat to the app
 
