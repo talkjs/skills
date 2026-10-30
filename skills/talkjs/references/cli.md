@@ -38,6 +38,11 @@ These are all current user-facing commands. Brackets mean optional arguments; an
 | `talkjs secret-keys create` | Generate a new key and return its secret |
 | `talkjs secret-keys set <id> <field> <value>` | Set `active` or `usedForWebhooks` to `true` or `false` |
 | `talkjs secret-keys delete <id>` | Delete an inactive, non-webhook key |
+| `talkjs webhooks list` | List the selected app's webhook configurations |
+| `talkjs webhooks get <id>` | Read a webhook's URL and event list |
+| `talkjs webhooks create <url> --events <json>` | Create a webhook with its initial subscriptions |
+| `talkjs webhooks set <id> <field> <value>` | Change `url` or replace `events` |
+| `talkjs webhooks delete <id>` | Delete one webhook |
 
 | Option | Where it applies | Meaning |
 | --- | --- | --- |
@@ -71,7 +76,7 @@ When a new test project is needed:
 talkjs anonymous-account create --json
 ```
 
-This creates a new anonymous account every time. Read the account from `value`: save `value.appId` in the app's configuration and retain `value.claimUrl` privately for the user. The CLI saves credentials outside the app's repository in `$XDG_CONFIG_HOME/talkjs/config.json`, or `~/.config/talkjs/config.json` by default. Files contain plaintext credentials, protected by private file permissions on Unix. Keep using the same config location for subsequent commands. Do not print or manually edit the credential file, or include the access token in the user-facing handoff.
+This creates a new anonymous account every time. Read the account from `value`: save `value.appId` in the app's configuration. Keep `value.claimUrl` private; it is an ownership-only fallback, not the normal handoff. Prefer [the CLI claim flow](#claiming-and-existing-projects). The CLI saves credentials outside the app's repository in `$XDG_CONFIG_HOME/talkjs/config.json`, or `~/.config/talkjs/config.json` by default. Files contain plaintext credentials, protected by private file permissions on Unix. Keep using the same config location for subsequent commands. Do not print or manually edit the credential file, or include the access token in the user-facing handoff.
 
 ## Settings
 
@@ -155,21 +160,46 @@ To replace a webhook signing key, select an active replacement with `set <replac
 
 Network failures do not automatically retry key mutations. If creation may have succeeded, inspect `list` before deliberately creating again. Permission, expired-credential, or key-limit errors are not reasons to create a replacement account. Claiming or logging out does not revoke an already retrieved chat secret key; it remains valid until deactivated, expired, or deleted.
 
-## Claiming and existing projects
+## Webhooks
 
-The ordinary demo needs no login or claim. After verifying chat, offer the returned `value.claimUrl` to the intended owner. They can open it, sign up or log in, and confirm ownership. Opening the plain claim URL alone does not connect the CLI.
-
-When the user wants ownership and continued CLI access together, run:
+Use webhooks when the requested integration needs TalkJS events delivered to its backend. Verify the selected app with `whoami` first. Creation/editing requires a plan with webhooks; an anonymous project has delivery disabled. If that blocks requested webhook setup, explain the restriction and offer the CLI claim flow below. Do not create another project or claim on the user's behalf.
 
 ```sh
-talkjs anonymous-account claim tAbCd123 --json
+talkjs webhooks list --json
+talkjs webhooks create "https://example.com/webhooks" --events '["message.sent","message.read"]' --json
+talkjs webhooks get <id> --json
+talkjs webhooks set <id> url "https://example.com/new-webhooks" --json
+talkjs webhooks set <id> events '["message.sent","message.updated"]' --json
+talkjs webhooks delete <id> --json
 ```
 
-Replace `tAbCd123` with the intended app ID. This positional argument can claim an older account retained by this CLI; omitting it claims the selected anonymous account. This selector applies only to claiming, not settings or secret-key commands.
+Replace example URLs with the user's actual backend endpoint and `<id>` with the UUID returned by `list` or `create`, not a URL or list index. Each webhook has `{id, url, events}`. `list` returns an array in `value`, `get`/`create`/`set` return one object, and successful deletion returns null. `set` changes only the named field; `events` is a JSON array that replaces the whole subscription list. `[]` stops subscriptions without deleting the configuration or freeing its plan slot. Duplicate events are removed.
 
-This waits for browser sign-in/sign-up and **Claim and connect CLI** confirmation. In JSON mode it does not open a browser: forward `value.claimUrl` from the `ok` message printed to stderr to the user while leaving the command running. The callback must reach the same computer as the CLI within five minutes. In a remote agent environment, explain this limitation instead of claiming that a link opened on the user's laptop will complete the remote CLI login. The plain claim link can still transfer ownership without connecting that CLI.
+Supported events:
 
-On success the CLI saves an OAuth login for the claimed project's test app, and the anonymous token stops working. Verify `value.project.appId` through `whoami --json`, then read settings again. If the user claimed through the plain URL or the waiting command timed out, reconnect with `talkjs login --json` on a machine where the browser callback can reach that CLI; login is not a workaround for the remote callback limitation. Do not create a replacement project.
+- `message.sent`, `message.read`, `message.updated`, `message.deleted`
+- `conversation.deleted`, `user.created`, `user.updated`
+- `notification.triggered`, `notification.sent`, `notification.delivered`, `notification.bounced`, `notification.unsubscribed`, `notification.opened`, `notification.link.clicked`
+
+Read the [webhook documentation](https://talkjs.com/docs/Webhooks/) for payloads, signature verification, and delivery behavior. Only configure an endpoint the user controls and intends to receive these events. The URL must use HTTP(S), with no embedded username/password or fragment. Do not expose webhook URLs or private query parameters in frontend code, public output, or handoff summaries. Configuring a webhook can start event delivery; do not create subscriptions as incidental demo cleanup or to test an unrelated feature.
+
+Use the existing webhook signing key; selecting a replacement remains `secret-keys set <key-id> usedForWebhooks true` and must be intentional. Creating a webhook does not rotate keys or send a test request. Reuse an existing matching subscription when appropriate. Plan limits and existing settings permissions apply. Do not delete another webhook to make room without authorization. Mutations are not automatically retried after an ambiguous network failure; inspect `list` before a deliberate retry.
+
+## Claiming and existing projects
+
+Claiming is not required to get chat working. When the user is ready to take ownership, prefer the CLI claim flow rather than sending the plain claim URL from account creation. Start:
+
+```sh
+talkjs anonymous-account claim --json
+```
+
+This claims the selected anonymous account; check its app ID with `whoami` against the integration first. An optional positional app ID can target an older saved anonymous account. This selector applies only to claiming, not settings or secret-key commands.
+
+Keep the command running while the user signs in or signs up and confirms **Claim and connect CLI**. In JSON mode it does not open a browser: forward only `value.claimUrl` from the `ok` message printed to stderr to the intended owner, not the plain link from account creation. Do not approve on their behalf. The callback must reach the same computer as the CLI within five minutes. In a remote agent environment, explain this limitation instead of claiming that a link opened on the user's laptop will complete the remote CLI login. If the callback cannot reach the CLI, the plain creation link is a fallback for transferring ownership only; explain that it will not connect that CLI.
+
+On success the CLI saves an OAuth login for the claimed project's test app, and the anonymous token stops working immediately. Verify `value.project.appId` through `whoami --json` matches the integration's app ID, then read settings again. No separate login is needed after a successful CLI claim.
+
+If the user independently claims through the plain creation link, ownership changes but the CLI still holds invalid anonymous credentials. This is claim-related invalidation, not early OAuth expiry; the CLI is not automatically logged in. Do not retry the claim or create a replacement project. Run `talkjs login --json` and have the user select the same project, then verify its app ID. Use the same recovery if claiming succeeds but the waiting CLI command cannot finish. Login still requires a browser callback that can reach that CLI; it does not bypass the remote-environment limitation.
 
 For an existing account, `talkjs login --json` prints an `ok` message with `value.authorizationUrl` to stderr and waits for browser approval and project selection with the same callback restriction. Login authorizes one project's test app using the user's existing permissions. Logging in again selects a different project. OAuth access tokens last one hour and renew automatically; refresh tokens expire after 30 days without renewal. If renewal fails or access is revoked, log in again rather than creating another anonymous account.
 
@@ -194,6 +224,9 @@ Every message with `--json` is a JSON object on its own line with the envelope `
 | `secret-keys get`, `create` | `{ "status": "ok", "value": { ...metadata, "secretKey": "..." } }` |
 | `secret-keys set` | `{ "status": "ok", "value": { ...metadata } }` |
 | `secret-keys delete` | `{ "status": "ok", "value": null }` |
+| `webhooks list` | `{ "status": "ok", "value": [ { "id": "...", "url": "...", "events": [ ... ] } ] }` |
+| `webhooks get`, `create`, `set` | `{ "status": "ok", "value": { "id": "...", "url": "...", "events": [ ... ] } }` |
+| `webhooks delete` | `{ "status": "ok", "value": null }` |
 
 Help and version output also use `status: "ok"`, with text in `value`. Help may emit multiple messages.
 

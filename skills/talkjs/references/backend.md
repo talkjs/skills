@@ -10,7 +10,7 @@ Reuse a secret key already configured on the app's backend. Otherwise follow [th
 
 Use the secret key for REST API calls and, when implementing authentication, signing user authentication tokens. Configure it yourself in the app's server-side environment or Gitignored local configuration; never expose it in frontend code, logs, or source control. The anonymous access token and OAuth credential authorize CLI settings/key management; neither is a chat REST API secret key or an SDK user authentication token.
 
-Claiming invalidates the anonymous access token, not an already retrieved secret key. Continue using the same app ID and backend key; reconnect through `talkjs login` if CLI access was not established during claiming. The CLI manages test-app keys only; use the owner's [TalkJS dashboard](https://talkjs.com/dashboard/) for live credentials and keep the two environments separate.
+Prefer [claiming through the CLI](cli.md#claiming-and-existing-projects) so the user takes ownership and authorizes continued CLI access together. Claiming immediately invalidates the anonymous access token, not an already retrieved secret key. Continue using the same app ID and backend key. If the user claimed through the plain creation link instead, run `talkjs login` and select that same project before further CLI configuration; do not recreate the project or rotate its backend key merely because the anonymous token stopped working. The CLI manages test-app keys only; use the owner's [TalkJS dashboard](https://talkjs.com/dashboard/) for live credentials and keep the two environments separate.
 
 ## Integrate the backend
 
