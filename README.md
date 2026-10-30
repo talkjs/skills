@@ -4,6 +4,12 @@ Agent skills that let AI coding agents add [TalkJS](https://talkjs.com) chat to 
 
 ## Install
 
+### Agent Plugins
+
+This repository is an [Agent Plugins](https://agent-plugins.org) 1.0.0 package. Install it using your client's plugin installation flow. If your client imports a local plugin directory, select the repository root.
+
+The root [plugin.json](plugin.json) identifies the portable package. The [Cursor compatibility manifest](.cursor-plugin/plugin.json) describes the same plugin for Cursor-specific tooling. Keep their shared metadata in sync. Both formats use the same `talkjs` skill and reference files; no MCP server is bundled.
+
 ### Agent Skills
 
 ```sh
@@ -26,7 +32,7 @@ Once the plugin is listed, install it from its [Cursor Directory](https://cursor
 2. Restart Cursor or run **Developer: Reload Window**.
 3. Open **Customize** and confirm that the `talkjs` skill appears.
 
-The plugin packages the same skill and platform guides as the Agent Skills installation. No MCP server is bundled.
+The Cursor plugin packages the same skill and reference files as the portable Agent Plugin and Agent Skills installations.
 
 ### TalkJS CLI
 
@@ -70,6 +76,7 @@ This repository syncs from the TalkJS codebase, so we can't merge pull requests 
 
 - [TalkJS documentation](https://talkjs.com/docs)
 - [Agent Skills specification](https://agentskills.io)
+- [Agent Plugins specification](https://agent-plugins.org/specification)
 
 ## License
 
