@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "talkjs",
-  "description": "Add TalkJS chat to web, React Native, and Flutter apps.",
-  "version": "1.0.0",
+  "description": "Add TalkJS chat to your app and configure your TalkJS project from your coding agent.",
+  "version": "1.1.0",
   "author": {
     "name": "TalkJS"
   },
