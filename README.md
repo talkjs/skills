@@ -8,7 +8,7 @@ Agent skills that let AI coding agents add [TalkJS](https://talkjs.com) chat to 
 
 This repository is an [Agent Plugins](https://agent-plugins.org) 1.0.0 package. Install it using your client's plugin installation flow. If your client imports a local plugin directory, select the repository root.
 
-The root [plugin.json](plugin.json) identifies the portable package. The [Cursor compatibility manifest](.cursor-plugin/plugin.json) describes the same plugin for Cursor-specific tooling. Keep their shared metadata in sync. Both formats use the same `talkjs` skill and reference files; no MCP server is bundled.
+The root [plugin.json](plugin.json) identifies the portable package. The [Cursor compatibility manifest](.cursor-plugin/plugin.json) describes the same plugin for Cursor-specific tooling. Keep their shared metadata in sync. Both formats include the TalkJS skill and a connection to the [TalkJS MCP server](https://talkjs.com/docs/Developer_Tools/MCP/).
 
 ### Agent Skills
 
@@ -26,13 +26,13 @@ Add TalkJS chat to my app: talkjs.com/SKILL.md
 
 ### Cursor plugin
 
-Once the plugin is listed, install it from its [Cursor Directory](https://cursor.directory) page. To test a local checkout before publication:
+To try the plugin locally:
 
 1. Copy the repository contents, including `.cursor-plugin/`, into `~/.cursor/plugins/local/talkjs/`.
 2. Restart Cursor or run **Developer: Reload Window**.
-3. Open **Customize** and confirm that the `talkjs` skill appears.
+3. Open **Customize** and confirm that the TalkJS skill and MCP server appear.
 
-The Cursor plugin packages the same skill and reference files as the portable Agent Plugin and Agent Skills installations.
+To configure an existing project, connect the TalkJS MCP server in Cursor, sign in to TalkJS, and select your project's test app. Try asking “Which language does my chat use by default?”
 
 ### TalkJS CLI
 
