@@ -2,6 +2,16 @@
 
 Agent skills that let AI coding agents add [TalkJS](https://talkjs.com) chat to your app. They work with Codex, Cursor, Claude Code, GitHub Copilot, and other agents that support [Agent Skills](https://agentskills.io).
 
+## TalkJS MCP server
+
+Use the TalkJS MCP server to read and change your chat configuration from your coding agent.
+
+1. Add `https://mcp.talkjs.com/mcp` as a remote HTTP MCP server in your agent.
+2. Sign in to TalkJS in your browser, choose your project’s test app, and approve access.
+3. Ask your agent “What’s the default chat language for this app?” or “Change the default chat language to Dutch.”
+
+[TalkJS MCP setup guide](https://talkjs.com/docs/Developer_Tools/MCP/)
+
 ## Install
 
 ### Agent Plugins
@@ -32,7 +42,7 @@ To try the plugin locally:
 2. Restart Cursor or run **Developer: Reload Window**.
 3. Open **Customize** and confirm that the TalkJS skill and MCP server appear.
 
-To configure an existing project, connect the TalkJS MCP server in Cursor, sign in to TalkJS, and select your project's test app. Try asking “Which language does my chat use by default?”
+Select TalkJS in the MCP settings to sign in and choose your project’s test app.
 
 ### TalkJS CLI
 
